@@ -25,6 +25,7 @@ if not os.path.isfile(ACTIVITIES_FILE):
 
 def send_mail(title, href):
     maill_boday = "<a href='"+href+"'>"+title+"</a>"
+    print(maill_boday)
     msg = MIMEText(maill_boday, 'html', 'utf-8')
     msg['From'] = MAILL_SETTING['from']
     msg['To'] = MAILL_SETTING['to']
