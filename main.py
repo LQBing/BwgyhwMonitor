@@ -25,7 +25,6 @@ if not os.path.isfile(ACTIVITIES_FILE):
 
 def send_mail(title, href):
     maill_boday = "<a href='"+href+"'>"+title+"</a>"
-    print(maill_boday)
     msg = MIMEText(maill_boday, 'html', 'utf-8')
     msg['From'] = MAILL_SETTING['from']
     msg['To'] = MAILL_SETTING['to']
@@ -49,6 +48,7 @@ def save_activities(title, href):
     href = str(href)
     activities_dict = (load_activities())
     if href not in activities_dict:
+        print("<a href='"+href+"'>"+title+"</a>")
         activities_dict[href] = title
         activities_file = open(ACTIVITIES_FILE, "w")
         activities_file.write(json.dumps(
@@ -62,11 +62,12 @@ def fetch_activities():
     response = requests.get(url, headers=header)
     html_doc = response.content
     soup = BeautifulSoup(html_doc, 'html.parser')
-    activities = soup.select(".excerpt h2 a")
-    for activity in activities:
-        title = activity.get("title")
-        href = activity.get("href")
-        save_activities(title, href)
+    articles = soup.select("article")
+    for article in articles:        
+        title = article.select("h2 a")[0].get("title")
+        href = article.select("h2 a")[0].get("href")
+        time=article.select("time")[0].text
+        save_activities(time +" "+ title, href)
 
 
 if __name__ == '__main__':
